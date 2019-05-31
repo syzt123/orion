@@ -1,0 +1,127 @@
+<{include file="layouts/header" /}>
+
+<div class="fix-header">
+    this is title
+</div>
+
+<div class="layui-container" style="margin-top: 50px;">
+    <form class="layui-form" action="/add-user" method="post">
+        <div class="layui-form-item">
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label-col">输入框</label>
+            <input type="text" name="title" required  lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input" style="width: 100%;">
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label-col">输入框</label>
+            <select name="province" lay-verify="required"  lay-filter="pro">
+                <{foreach $arealist as $vo}>
+                <option value="{$vo['id']}">{$vo['area_name']}</option>
+                <{/foreach}>
+            </select>
+        </div>
+
+        <div class="layui-form-item">
+            <select name="city" lay-verify="required"  lay-filter="city" id="city">
+            </select>
+        </div>
+
+        <div class="layui-form-item">
+            <select name="area" lay-verify="required" id="area">
+            </select>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label-col">输入框</label>
+            <input type="checkbox" name="like[write]" title="写作">
+            <input type="checkbox" name="like[read]" title="阅读" checked>
+            <input type="checkbox" name="like[dai]" title="发呆">
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label-col">输入框</label>
+            <input type="checkbox" name="switch" lay-skin="switch">
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label-col">输入框</label>
+            <input type="radio" name="sex" value="男" title="男">
+            <input type="radio" name="sex" value="女" title="女" checked>
+        </div>
+
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label-col">输入框</label>
+            <textarea name="desc" placeholder="请输入内容" class="layui-textarea"></textarea>
+        </div>
+
+        <div class="layui-form-item">
+                <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    var  SCOPE = {
+        findCity:"/getChildArea",
+    }
+</script>
+<script>
+    //Demo
+    layui.use('form', function(){
+        var form = layui.form;
+            $=layui.jquery;
+
+        //监听提交
+        form.on('submit(formDemo)', function(data){
+            layer.msg(JSON.stringify(data.field));
+            return false;
+        });
+
+        //选择省份
+        form.on('select(pro)', function (data) {
+            var _value ={
+                parent_id:data.value,
+            };
+            $.post(SCOPE.findCity,_value,function (res) {
+                res=JSON.parse(res);
+               if(res.error===0){
+                   $("#area").html('');
+                 $("#city").html('').append(res.option);
+                   form.render('select'); //刷新select选择框渲染
+               }
+            },'JSON')
+        });
+
+        //选择区域
+        form.on('select(city)',function (data) {
+            var _value ={
+                parent_id:data.value,
+            };
+            $.post(SCOPE.findCity,_value,function (res) {
+                res=JSON.parse(res);
+                if(res.error===0){
+                    $("#area").html('').append(res.option);
+                    form.render('select'); //刷新select选择框渲染
+                }
+            },'JSON')
+        })  ;
+
+        //表单提交事件
+        form.on('submit(formDemo)', function(data){
+            console.log(data.elem) //被执行事件的元素DOM对象，一般为button对象
+            console.log(data.form) //被执行提交的form对象，一般在存在form标签时才会返回
+            console.log(data.field) //当前容器的全部表单字段，名值对形式：{name: value}
+            return true;
+        });
+
+
+    });
+</script>
+
+<{include file="layouts/footer" /}>
+
+
+

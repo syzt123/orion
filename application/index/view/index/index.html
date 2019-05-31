@@ -1,0 +1,33 @@
+<{include file="layouts/header" /}>
+
+
+<div class="layui-row layui-col-space10">
+
+    <{volist name='result'  id='userDetail'}>
+    <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+        <a href="/detailed"><img src="{$userDetail.cover}" width="100%" height="270px"></a>
+        <div class="layui-row">
+            <span class="layui-col-xs4 layui-col-sm4 layui-col-md4 user-control">{$userDetail.name}</span>
+            <span class="layui-col-xs4 layui-col-sm4 layui-col-md4 user-control">{$userDetail.age}</span>
+            <span class="layui-col-xs4 layui-col-sm4 layui-col-md4 user-control"></span>
+        </div>
+    </div>
+    <{/volist}>
+
+</div>
+
+
+
+<script>
+    //Demo
+    layui.use('form', function(){
+        var form = layui.form;
+
+        //监听提交
+
+    });
+</script>
+<{include file="layouts/footer" /}>
+
+
+
